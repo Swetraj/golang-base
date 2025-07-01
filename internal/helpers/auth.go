@@ -11,8 +11,8 @@ func GetAuthUser(c *gin.Context) *middleware.AuthUser {
 	authUser, exists := c.Get("authUser")
 
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to get the user",
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unable to get authorized user",
 		})
 		return nil
 	}

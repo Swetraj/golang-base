@@ -1,6 +1,9 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type PermissionCategory struct {
 	gorm.Model
@@ -35,4 +38,12 @@ type User struct {
 	IsActive    bool          `gorm:"default:false"`
 	Permissions []*Permission `gorm:"many2many:user_permissions"`
 	Roles       []*Role       `gorm:"many2many:user_roles"`
+}
+
+type PasswordReset struct {
+	ID        uint   `gorm:"primarykey"`
+	Email     string `gorm:"index"`
+	Token     string `gorm:"uniqueIndex"`
+	ExpiresAt time.Time
+	Used      bool
 }

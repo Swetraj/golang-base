@@ -14,21 +14,25 @@ func init() {
 }
 
 func main() {
-	err := initializers.DB.Migrator().DropTable(
-		userModel.User{},
-		userModel.Permission{},
-		userModel.PermissionCategory{},
-		userModel.Role{},
-		userModel.Profile{},
-		models.Category{},
-		models.Post{},
-		models.Comment{},
-	)
-	if err != nil {
-		log.Fatal("Table dropping failed")
-	}
+	//err := initializers.DB.Migrator().DropTable(
+	//	userModel.User{},
+	//	userModel.Permission{},
+	//	userModel.PermissionCategory{},
+	//	userModel.Role{},
+	//	userModel.Profile{},
+	//	userModel.StudentDetail{},
+	//	userModel.TeacherDetail{},
+	//	userModel.ParentDetail{},
+	//	models.Category{},
+	//	models.Post{},
+	//	models.Comment{},
+	//)
+	//if err != nil {
+	//	log.Fatal("Table dropping failed")
+	//}
 
-	err = initializers.DB.AutoMigrate(
+	err := initializers.DB.AutoMigrate(
+		userModel.PasswordReset{},
 		userModel.User{},
 		userModel.Permission{},
 		userModel.PermissionCategory{},

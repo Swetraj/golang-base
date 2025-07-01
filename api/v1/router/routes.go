@@ -10,6 +10,7 @@ import (
 func GetRoute(r *gin.Engine) {
 	api := r.Group("/api")
 	// User routes
+	r.POST("/api/register", controllers2.Register)
 	r.POST("/api/signup", controllers2.Signup)
 	r.POST("/api/login", controllers2.Login)
 
