@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Swetraj/golang-base/api/v1/middleware"
 	"github.com/Swetraj/golang-base/api/v1/router"
 	"github.com/Swetraj/golang-base/config"
 	"github.com/Swetraj/golang-base/db/initializers"
@@ -16,7 +17,10 @@ func init() {
 func main() {
 	fmt.Println("Hello auth")
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 	router.GetRoute(r)
-
-	r.Run()
+	err := r.Run()
+	if err != nil {
+		return
+	}
 }
