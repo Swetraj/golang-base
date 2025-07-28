@@ -6,17 +6,19 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func IsUniqueValue(tableName, fieldName, value string) bool {
+func IsUniqueValue(tableName, fieldName, value string) (bool, error) {
 	var count int64
 
-	result := initializers.DB.Table(tableName).Where(fieldName+" = ?", value).Count(&count)
+	err := initializers.DB.
+		Table(tableName).
+		Where(fmt.Sprintf("%s = ?", fieldName), value).
+		Count(&count).Error
 
-	if result.Error != nil {
-		fmt.Println("Error:", result.Error)
-		return false
+	if err != nil {
+		return false, err
 	}
 
-	return count > 0
+	return count == 0, nil
 }
 
 func IsExistValue(tableName, fieldName string, value interface{}) bool {

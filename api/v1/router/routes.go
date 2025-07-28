@@ -1,8 +1,8 @@
 package router
 
 import (
+	"github.com/Swetraj/golang-base/api/middleware"
 	controllers2 "github.com/Swetraj/golang-base/api/v1/controllers"
-	"github.com/Swetraj/golang-base/api/v1/middleware"
 	userRoutes "github.com/Swetraj/golang-base/api/v1/router/user"
 	"github.com/gin-gonic/gin"
 )

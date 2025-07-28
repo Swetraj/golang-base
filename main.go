@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Swetraj/golang-base/api/v1/middleware"
+	"github.com/Swetraj/golang-base/api/middleware"
 	"github.com/Swetraj/golang-base/api/v1/router"
 	"github.com/Swetraj/golang-base/config"
 	"github.com/Swetraj/golang-base/db/initializers"

@@ -45,7 +45,17 @@ func Register(c *gin.Context) {
 	}
 
 	// Email unique validation
-	if validations.IsUniqueValue("users", "email", userInput.Email) {
+	isUnique, err := validations.IsUniqueValue("users", "email", userInput.Email)
+	if err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity, gin.H{
+				"validations": map[string]interface{}{
+					"Err": "DB Error!",
+				},
+			},
+		)
+	}
+	if !isUnique {
 		c.JSON(
 			http.StatusUnprocessableEntity, gin.H{
 				"validations": map[string]interface{}{
