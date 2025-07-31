@@ -48,19 +48,7 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		return err
 	}
 
-	go func(userEmail, token string) {
-		var email struct {
-			Subject string
-			Message string
-		}
-		email.Subject = "Activate your account"
-		resetLink := os.Getenv("FRONTEND_URL") + "/auth/signup?link=" + token
-		email.Message = strings.ReplaceAll(emails.PasswordResetTemplate, "{{RESET_LINK}}", resetLink)
-
-		if err := helpers.SendMail(userEmail, email.Subject, email.Message); err != nil {
-			log.Printf("Failed to send activation email to %s: %v", userEmail, err)
-		}
-	}(user.Email, reset.Token)
+	go u.SendEmail(user.Email, reset.Token)
 	return nil
 }
 
@@ -124,4 +112,18 @@ func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd
 	}
 
 	return nil
+}
+
+func (u *userService) SendEmail(email string, token string) {
+	var emailStruct struct {
+		Subject string
+		Message string
+	}
+	emailStruct.Subject = "Activate your account"
+	resetLink := os.Getenv("FRONTEND_URL") + "/auth/signup?link=" + token
+	emailStruct.Message = strings.ReplaceAll(emails.PasswordResetTemplate, "{{RESET_LINK}}", resetLink)
+
+	if err := helpers.SendMail(email, emailStruct.Subject, emailStruct.Message); err != nil {
+		log.Printf("Failed to send activation email to %s: %v", email, err)
+	}
 }

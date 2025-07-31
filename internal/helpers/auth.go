@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// GetAuthUser returns the authenticated user details from the Gin context
 func GetAuthUser(c *gin.Context) *middleware.AuthUser {
 	authUser, exists := c.Get("authUser")
 

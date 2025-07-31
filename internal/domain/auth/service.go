@@ -8,6 +8,7 @@ type UserService interface {
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserById(ctx context.Context, id uint) (*User, error)
 	ResetPassword(ctx context.Context, token string, pwd string) error
+	SendEmail(email string, token string)
 }
 
 type VerificationService interface {
