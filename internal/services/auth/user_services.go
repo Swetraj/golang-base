@@ -25,8 +25,14 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		return errors.New("email already taken")
 	}
 
+	pwd, _ := helpers.RandomString(10)
+
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(pwd), 10)
+
 	user := &auth.User{
-		Email: email,
+		Email:        email,
+		PasswordHash: string(hashPassword),
+		Provider:     auth.ProviderEmail,
 	}
 
 	err = u.repo.Create(ctx, user)
@@ -40,6 +46,7 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		Token:     token,
 		UserID:    user.ID,
 		Used:      false,
+		Type:      auth.VerificationEmail,
 		ExpiresAt: time.Now().Add(30 * time.Minute),
 	}
 
