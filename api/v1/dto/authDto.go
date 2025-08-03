@@ -1,4 +1,4 @@
-package auth
+package dto
 
 type RegisterRequest struct {
 	Email string `json:"email"`

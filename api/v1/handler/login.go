@@ -3,8 +3,8 @@ package handler
 import (
 	"context"
 	"errors"
-	"github.com/Swetraj/golang-base/api/v1/auth"
-	"github.com/Swetraj/golang-base/internal/validations"
+	"github.com/Swetraj/golang-base/api/v1/dto"
+	"github.com/Swetraj/golang-base/internal/pkg/validations"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
@@ -14,7 +14,7 @@ import (
 )
 
 func (handler *AuthHandler) Login(c *gin.Context) {
-	var userRequest auth.LoginRequest
+	var userRequest dto.LoginRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		var errs validator.ValidationErrors

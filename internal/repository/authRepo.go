@@ -1,10 +1,18 @@
-package auth
+package repository
 
 import (
 	"context"
 	"github.com/Swetraj/golang-base/internal/domain/auth"
-	"time"
+	"gorm.io/gorm"
 )
+
+type userRepo struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) auth.UserRepository {
+	return &userRepo{db: db}
+}
 
 func (u *userRepo) GetByEmail(ctx context.Context, email string) (*auth.User, error) {
 	var user auth.User
@@ -18,8 +26,10 @@ func (u *userRepo) GetById(ctx context.Context, id uint) (*auth.User, error) {
 	return &user, err
 }
 
-func (t *tokenRepo) GetByToken(ctx context.Context, tokenString string) (*auth.VerificationToken, error) {
-	var token auth.VerificationToken
-	err := t.db.WithContext(ctx).Where("token=?", tokenString).Where("expiry >", time.Now()).First(&token).Error
-	return &token, err
+func (u *userRepo) Create(ctx context.Context, user *auth.User) error {
+	return u.db.WithContext(ctx).Create(user).Error
+}
+
+func (u *userRepo) Update(ctx context.Context, user *auth.User) error {
+	return u.db.WithContext(ctx).Save(user).Error
 }

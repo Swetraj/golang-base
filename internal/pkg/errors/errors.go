@@ -1,4 +1,4 @@
-package format_errors
+package errors
 
 import (
 	"errors"
@@ -14,9 +14,11 @@ func RecordNotFound(c *gin.Context, err error, errMessage ...string) {
 	}
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": errorMessage,
-		})
+		c.JSON(
+			http.StatusNotFound, gin.H{
+				"error": errorMessage,
+			},
+		)
 		return
 	}
 
@@ -25,8 +27,10 @@ func RecordNotFound(c *gin.Context, err error, errMessage ...string) {
 }
 
 func InternalServerError(c *gin.Context) {
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"error": "Internal server error",
-	})
+	c.JSON(
+		http.StatusInternalServerError, gin.H{
+			"error": "Internal server error",
+		},
+	)
 	return
 }

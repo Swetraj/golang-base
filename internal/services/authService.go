@@ -1,18 +1,35 @@
-package auth
+package services
 
 import (
 	"context"
 	"errors"
 	"github.com/Swetraj/golang-base/internal/domain/auth"
-	"github.com/Swetraj/golang-base/internal/emails"
 	"github.com/Swetraj/golang-base/internal/helpers"
-	"github.com/Swetraj/golang-base/internal/validations"
+	"github.com/Swetraj/golang-base/internal/pkg/emails"
+	"github.com/Swetraj/golang-base/internal/pkg/validations"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
 	"strings"
 	"time"
 )
+
+type tokenService struct {
+	repo auth.VerificationTokenRepository
+}
+
+type userService struct {
+	repo         auth.UserRepository
+	tokenService auth.VerificationTokenRepository
+}
+
+func NewUserService(repo auth.UserRepository, tokenService auth.VerificationTokenRepository) auth.UserService {
+	return &userService{repo, tokenService}
+}
+
+func NewTokenService(repo auth.VerificationTokenRepository) auth.VerificationService {
+	return &tokenService{repo}
+}
 
 func (u *userService) Register(ctx context.Context, email string) error {
 
@@ -50,7 +67,7 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		ExpiresAt: time.Now().Add(30 * time.Minute),
 	}
 
-	err = u.tokenService.repo.Create(ctx, reset)
+	err = u.tokenService.Create(ctx, reset)
 	if err != nil {
 		return err
 	}
@@ -101,7 +118,7 @@ func (u *userService) GetUserById(ctx context.Context, id uint) (*auth.User, err
 }
 
 func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd string) error {
-	token, err := u.tokenService.repo.GetByToken(ctx, tokenString)
+	token, err := u.tokenService.GetByToken(ctx, tokenString)
 	if err != nil {
 		return err
 	}
@@ -120,6 +137,9 @@ func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd
 
 	return nil
 }
+func (t tokenService) UpdateToken(ctx context.Context, token *auth.VerificationToken) error {
+	panic("implement me")
+}
 
 func (u *userService) SendEmail(email string, token string) {
 	var emailStruct struct {
@@ -127,7 +147,7 @@ func (u *userService) SendEmail(email string, token string) {
 		Message string
 	}
 	emailStruct.Subject = "Activate your account"
-	resetLink := os.Getenv("FRONTEND_URL") + "/auth/signup?link=" + token
+	resetLink := os.Getenv("FRONTEND_URL") + "/dto/signup?link=" + token
 	emailStruct.Message = strings.ReplaceAll(emails.PasswordResetTemplate, "{{RESET_LINK}}", resetLink)
 
 	if err := helpers.SendMail(email, emailStruct.Subject, emailStruct.Message); err != nil {

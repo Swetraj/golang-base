@@ -1,8 +1,7 @@
-package main
+package repository
 
 import (
 	"github.com/Swetraj/golang-base/internal/domain/auth"
-	repo "github.com/Swetraj/golang-base/internal/repository/auth"
 	"gorm.io/gorm"
 )
 
@@ -13,6 +12,7 @@ type Repositories struct {
 
 func NewRepositories(db *gorm.DB) *Repositories {
 	return &Repositories{
-		Auth: repo.NewUserRepository(db),
+		Auth:  NewUserRepository(db),
+		Token: NewTokenRepository(db),
 	}
 }
