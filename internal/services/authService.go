@@ -135,6 +135,12 @@ func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd
 		return err
 	}
 
+	token.Used = true
+	err = u.tokenService.Update(ctx, token)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 func (t tokenService) UpdateToken(ctx context.Context, token *auth.VerificationToken) error {
