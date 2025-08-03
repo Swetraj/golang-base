@@ -152,8 +152,10 @@ func (u *userService) SendEmail(email string, token string) {
 		Message string
 	}
 	emailStruct.Subject = "Activate your account"
-	resetLink := os.Getenv("FRONTEND_URL") + "/dto/signup?link=" + token
+	resetLink := os.Getenv("FRONTEND_URL") + "/api/auth/reset?link=" + token
 	emailStruct.Message = strings.ReplaceAll(emails.PasswordResetTemplate, "{{RESET_LINK}}", resetLink)
+	emailStruct.Message = strings.ReplaceAll(emailStruct.Message, "{{COMPANY_NAME}}", os.Getenv("COMPANY_NAME"))
+	emailStruct.Message = strings.ReplaceAll(emailStruct.Message, "{{EMAIL}}", email)
 
 	if err := helpers.SendMail(email, emailStruct.Subject, emailStruct.Message); err != nil {
 		log.Printf("Failed to send activation email to %s: %v", email, err)

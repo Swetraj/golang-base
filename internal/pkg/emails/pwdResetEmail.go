@@ -80,7 +80,7 @@ var PasswordResetTemplate = `
 
         <!-- Email Body -->
         <div class="email-body">
-            <p class="mb-4">Dear User,</p>
+            <p class="mb-4">Dear {{EMAIL}},</p>
             <p class="mb-4">We received a request to reset the password for your account.</p>
             <p class="mb-4">To reset your password, please click on the link below:</p>
             <div class="text-center">
@@ -90,12 +90,12 @@ var PasswordResetTemplate = `
             <p class="mt-4 text-sm text-gray-600">For your security, please do not share this link with anyone.</p>
             <p class="mt-6">If you have any questions, please contact our support team.</p>
             <p class="mt-8">Thank you,</p>
-            <p class="mt-1">The [Your Company Name] Team</p>
+            <p class="mt-1">The {{COMPANY_NAME}} Team</p>
         </div>
 
         <!-- Email Footer -->
         <div class="email-footer">
-            <p>&copy; 2025 [Your Company Name]. All rights reserved.</p>
+            <p>&copy; 2025 {{COMPANY_NAME}}. All rights reserved.</p>
             <p>
                 <a href="#" class="text-indigo-600 hover:underline">Privacy Policy</a> |
                 <a href="#" class="text-indigo-600 hover:underline">Terms of Service</a>
