@@ -16,7 +16,12 @@ func NewUserRepository(db *gorm.DB) auth.UserRepository {
 
 func (u *userRepo) GetByEmail(ctx context.Context, email string) (*auth.User, error) {
 	var user auth.User
-	err := u.db.WithContext(ctx).First(&user, "email = ?", email).Error
+	err := u.db.WithContext(ctx).Where(
+		&auth.User{
+			Email:    email,
+			IsActive: true,
+		},
+	).First(&user).Error
 	return &user, err
 }
 
