@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/Swetraj/golang-base/db/initializers"
-	userModel "github.com/Swetraj/golang-base/internal/models/user"
+	"github.com/Swetraj/golang-base/internal/domain/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
@@ -26,14 +26,16 @@ func RequireAuth(c *gin.Context) {
 
 	// Decode and validate it
 	// Parse and takes the token string and a function for look
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Validate the alg
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
+	token, err := jwt.Parse(
+		tokenString, func(token *jwt.Token) (interface{}, error) {
+			// Validate the alg
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
 
-		return []byte(os.Getenv("SECRET")), nil
-	})
+			return []byte(os.Getenv("SECRET")), nil
+		},
+	)
 
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -48,13 +50,15 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		// Find the user with token sub
-		var user userModel.User
+		var user auth.User
 		initializers.DB.Find(&user, claims["sub"])
 
 		if user.ID == 0 {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Unauthorized",
-			})
+			c.AbortWithStatusJSON(
+				http.StatusUnauthorized, gin.H{
+					"error": "Unauthorized",
+				},
+			)
 			return
 		}
 

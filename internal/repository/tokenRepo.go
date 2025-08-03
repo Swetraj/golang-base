@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/Swetraj/golang-base/internal/domain/auth"
 	"gorm.io/gorm"
-	"time"
 )
 
 type tokenRepo struct {
@@ -21,7 +20,7 @@ func (t *tokenRepo) Create(ctx context.Context, token *auth.VerificationToken) e
 
 func (t *tokenRepo) GetByToken(ctx context.Context, tokenString string) (*auth.VerificationToken, error) {
 	var token auth.VerificationToken
-	err := t.db.WithContext(ctx).Where("token=?", tokenString).Where("expiry >", time.Now()).First(&token).Error
+	err := t.db.WithContext(ctx).Where("token=?", tokenString).First(&token).Error
 	return &token, err
 }
 

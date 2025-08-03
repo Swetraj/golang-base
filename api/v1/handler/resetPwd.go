@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Swetraj/golang-base/api/v1/dto"
 	"github.com/Swetraj/golang-base/internal/pkg/validations"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func (handler *AuthHandler) ResetPwd(c *gin.Context) {
 
 	var userRequest dto.ResetPasswordRequest
 	query := c.Query("link")
+	fmt.Printf("query: %s\n", query)
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		var errs validator.ValidationErrors

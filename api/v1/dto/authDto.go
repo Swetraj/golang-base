@@ -1,16 +1,16 @@
 package dto
 
 type RegisterRequest struct {
-	Email string `json:"email"`
+	Email string `json:"email" required:"true"`
 }
 
 type ResetPasswordRequest struct {
-	Password string `json:"password"`
+	Password string `json:"password" required:"true"`
 }
 
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" required:"true"`
+	Password string `json:"password" required:"true"`
 }
 
 type LoginResponse struct {
