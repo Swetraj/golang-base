@@ -138,7 +138,12 @@ func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd
 	return nil
 }
 func (t tokenService) UpdateToken(ctx context.Context, token *auth.VerificationToken) error {
-	panic("implement me")
+	err := t.repo.Update(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *userService) SendEmail(email string, token string) {
