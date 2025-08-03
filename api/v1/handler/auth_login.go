@@ -58,6 +58,8 @@ func (handler *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	userResponse := dto.LoginResponseDTO(user)
+
 	tknString, err := handler.createJWT(user.ID, user.Email)
 
 	if err != nil {
@@ -69,7 +71,8 @@ func (handler *AuthHandler) Login(c *gin.Context) {
 	c.SetCookie("Authorization", tknString, 3600*24*30, "", "", false, true)
 
 	c.JSON(
-		http.StatusOK, gin.H{},
+		http.StatusOK,
+		userResponse,
 	)
 }
 

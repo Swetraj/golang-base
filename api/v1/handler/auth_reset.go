@@ -61,6 +61,8 @@ func (handler *AuthHandler) ResetPwd(c *gin.Context) {
 	}
 
 	c.JSON(
-		http.StatusOK, gin.H{},
+		http.StatusOK, gin.H{
+			"message": "Successfully reset password",
+		},
 	)
 }
