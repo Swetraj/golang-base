@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (handler *AuthHandler) RegisterUser(c *gin.Context) {
+func (handler *RoutesHandler) RegisterUser(c *gin.Context) {
 	var userRequest dto.RegisterRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {

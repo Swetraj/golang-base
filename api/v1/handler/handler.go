@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/Swetraj/golang-base/api/middleware"
 	"github.com/Swetraj/golang-base/internal/domain/auth"
 	"github.com/Swetraj/golang-base/internal/services"
 	"github.com/gin-gonic/gin"
@@ -17,25 +18,26 @@ func NewBaseHandler() *BaseHandler {
 	}
 }
 
-type AuthHandler struct {
+type RoutesHandler struct {
 	*BaseHandler
 	userService  auth.UserService
 	tokenService auth.VerificationService
 }
 
-func NewHandler(services *services.Services) *AuthHandler {
-	return &AuthHandler{
+func NewHandler(services *services.Services) *RoutesHandler {
+	return &RoutesHandler{
 		BaseHandler:  NewBaseHandler(),
 		userService:  services.Auth,
 		tokenService: services.Token,
 	}
 }
 
-func (handler *AuthHandler) RegisterRoutes(rg *gin.RouterGroup) {
+func (handler *RoutesHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	hg := rg.Group("/auth")
 	{
 		hg.POST("/login", handler.Login)
 		hg.POST("/register", handler.RegisterUser)
 		hg.POST("/reset", handler.ResetPwd)
 	}
+	rg.Use(middleware.RequireAuth)
 }

@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func (handler *AuthHandler) ResetPwd(c *gin.Context) {
+func (handler *RoutesHandler) ResetPwd(c *gin.Context) {
 
 	var userRequest dto.ResetPasswordRequest
 	query := c.Query("link")

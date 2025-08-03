@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func (handler *AuthHandler) Login(c *gin.Context) {
+func (handler *RoutesHandler) Login(c *gin.Context) {
 	var userRequest dto.LoginRequest
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -76,7 +76,7 @@ func (handler *AuthHandler) Login(c *gin.Context) {
 	)
 }
 
-func (handler *AuthHandler) createJWT(id uint, email string) (string, error) {
+func (handler *RoutesHandler) createJWT(id uint, email string) (string, error) {
 
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256, jwt.MapClaims{

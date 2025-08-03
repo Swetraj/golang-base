@@ -12,7 +12,6 @@ import (
 func SetupApp() *gin.Engine {
 	db := initializers.DB
 	repositories := repository.NewRepositories(db)
-
 	services := services2.NewServices(repositories)
 	handler := handler2.NewHandler(services)
 
