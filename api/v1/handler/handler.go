@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/Swetraj/golang-base/api/middleware"
-	"github.com/Swetraj/golang-base/internal/domain/auth"
+	"github.com/Swetraj/golang-base/internal/domain/service"
 	"github.com/Swetraj/golang-base/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -20,8 +20,8 @@ func NewBaseHandler() *BaseHandler {
 
 type RoutesHandler struct {
 	*BaseHandler
-	userService  auth.UserService
-	tokenService auth.VerificationService
+	userService  service.UserService
+	tokenService service.VerificationService
 }
 
 func NewHandler(services *services.Services) *RoutesHandler {

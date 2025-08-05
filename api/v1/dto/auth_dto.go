@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/Swetraj/golang-base/internal/domain/auth"
+import "github.com/Swetraj/golang-base/internal/domain/model"
 
 type RegisterRequest struct {
 	Email string `json:"email" required:"true"`
@@ -21,7 +21,7 @@ type LoginResponse struct {
 	IsActive bool   `json:"is_active"`
 }
 
-func LoginResponseDTO(user *auth.User) *LoginResponse {
+func LoginResponseDTO(user *model.User) *LoginResponse {
 	return &LoginResponse{
 		ID:       user.ID,
 		Email:    user.Email,

@@ -3,7 +3,10 @@ package services
 import (
 	"context"
 	"errors"
-	"github.com/Swetraj/golang-base/internal/domain/auth"
+	"github.com/Swetraj/golang-base/internal/domain/constants"
+	"github.com/Swetraj/golang-base/internal/domain/model"
+	"github.com/Swetraj/golang-base/internal/domain/repository"
+	"github.com/Swetraj/golang-base/internal/domain/service"
 	"github.com/Swetraj/golang-base/internal/helpers"
 	"github.com/Swetraj/golang-base/internal/pkg/emails"
 	"github.com/Swetraj/golang-base/internal/pkg/validations"
@@ -15,19 +18,21 @@ import (
 )
 
 type tokenService struct {
-	repo auth.VerificationTokenRepository
+	repo repository.VerificationTokenRepository
 }
 
 type userService struct {
-	repo         auth.UserRepository
-	tokenService auth.VerificationTokenRepository
+	repo         repository.UserRepository
+	tokenService repository.VerificationTokenRepository
 }
 
-func NewUserService(repo auth.UserRepository, tokenService auth.VerificationTokenRepository) auth.UserService {
+func NewUserService(
+	repo repository.UserRepository, tokenService repository.VerificationTokenRepository,
+) service.UserService {
 	return &userService{repo, tokenService}
 }
 
-func NewTokenService(repo auth.VerificationTokenRepository) auth.VerificationService {
+func NewTokenService(repo repository.VerificationTokenRepository) service.VerificationService {
 	return &tokenService{repo}
 }
 
@@ -46,10 +51,10 @@ func (u *userService) Register(ctx context.Context, email string) error {
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(pwd), 10)
 
-	user := &auth.User{
+	user := &model.User{
 		Email:        email,
 		PasswordHash: string(hashPassword),
-		Provider:     auth.ProviderEmail,
+		Provider:     constants.ProviderEmail,
 	}
 
 	err = u.repo.Create(ctx, user)
@@ -59,11 +64,11 @@ func (u *userService) Register(ctx context.Context, email string) error {
 
 	token := helpers.GenerateResetToken()
 
-	reset := &auth.VerificationToken{
+	reset := &model.VerificationToken{
 		Token:     token,
 		UserID:    user.ID,
 		Used:      false,
-		Type:      auth.VerificationEmail,
+		Type:      constants.VerificationEmail,
 		ExpiresAt: time.Now().Add(30 * time.Minute),
 	}
 
@@ -76,7 +81,7 @@ func (u *userService) Register(ctx context.Context, email string) error {
 	return nil
 }
 
-func (u *userService) Login(ctx context.Context, email string, password string) (*auth.User, error) {
+func (u *userService) Login(ctx context.Context, email string, password string) (*model.User, error) {
 	user, err := u.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -93,7 +98,7 @@ func (u *userService) Login(ctx context.Context, email string, password string) 
 	return user, nil
 }
 
-func (u *userService) GetUserByEmail(ctx context.Context, email string) (*auth.User, error) {
+func (u *userService) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	user, err := u.repo.GetByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -105,7 +110,7 @@ func (u *userService) GetUserByEmail(ctx context.Context, email string) (*auth.U
 	return user, nil
 }
 
-func (u *userService) GetUserById(ctx context.Context, id uint) (*auth.User, error) {
+func (u *userService) GetUserById(ctx context.Context, id uint) (*model.User, error) {
 	user, err := u.repo.GetById(ctx, id)
 	if err != nil {
 		return nil, err
@@ -143,7 +148,7 @@ func (u *userService) ResetPassword(ctx context.Context, tokenString string, pwd
 
 	return nil
 }
-func (t tokenService) UpdateToken(ctx context.Context, token *auth.VerificationToken) error {
+func (t tokenService) UpdateToken(ctx context.Context, token *model.VerificationToken) error {
 	err := t.repo.Update(ctx, token)
 	if err != nil {
 		return err

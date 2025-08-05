@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/Swetraj/golang-base/db/initializers"
-	"github.com/Swetraj/golang-base/internal/domain/auth"
+	"github.com/Swetraj/golang-base/internal/domain/model"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
@@ -50,7 +50,7 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		// Find the user with token sub
-		var user auth.User
+		var user model.User
 		initializers.DB.Find(&user, claims["sub"])
 
 		if user.ID == 0 {

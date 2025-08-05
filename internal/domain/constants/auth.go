@@ -1,4 +1,4 @@
-package auth
+package constants
 
 const (
 	ProviderEmail = "email"

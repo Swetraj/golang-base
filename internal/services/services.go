@@ -1,13 +1,13 @@
 package services
 
 import (
-	"github.com/Swetraj/golang-base/internal/domain/auth"
+	"github.com/Swetraj/golang-base/internal/domain/service"
 	"github.com/Swetraj/golang-base/internal/repository"
 )
 
 type Services struct {
-	Auth  auth.UserService
-	Token auth.VerificationService
+	Auth  service.UserService
+	Token service.VerificationService
 }
 
 func NewServices(repos *repository.Repositories) *Services {
