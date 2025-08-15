@@ -35,6 +35,9 @@ func (u *userRepo) GetById(ctx context.Context, id uint) (*model.User, error) {
 func (u *userRepo) Create(ctx context.Context, user *model.User) error {
 	return u.db.WithContext(ctx).Create(user).Error
 }
+func (u *userRepo) CreateWithTx(ctx context.Context, tx *gorm.DB, user *model.User) error {
+	return tx.WithContext(ctx).Create(user).Error
+}
 
 func (u *userRepo) Update(ctx context.Context, user *model.User) error {
 	return u.db.WithContext(ctx).Save(user).Error

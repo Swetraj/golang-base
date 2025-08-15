@@ -2,8 +2,7 @@ package tests
 
 import (
 	"github.com/Swetraj/golang-base/db/initializers"
-	"github.com/Swetraj/golang-base/internal/models"
-	"github.com/Swetraj/golang-base/internal/models/user"
+	"github.com/Swetraj/golang-base/internal/domain/model"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -20,13 +19,13 @@ func DatabaseRefresh() {
 	initializers.ConnectDB()
 
 	// Drop all the tables
-	err = initializers.DB.Migrator().DropTable(user.User{}, models.Category{}, models.Post{}, models.Comment{})
+	err = initializers.DB.Migrator().DropTable(model.User{})
 	if err != nil {
 		log.Fatal("Table dropping failed")
 	}
 
 	// Migrate again
-	err = initializers.DB.AutoMigrate(user.User{}, models.Category{}, models.Post{}, models.Comment{})
+	err = initializers.DB.AutoMigrate(model.User{})
 
 	if err != nil {
 		log.Fatal("Migration failed")

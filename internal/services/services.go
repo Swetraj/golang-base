@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/Swetraj/golang-base/internal/domain/service"
 	"github.com/Swetraj/golang-base/internal/repository"
+	"gorm.io/gorm"
 )
 
 type Services struct {
@@ -10,9 +11,9 @@ type Services struct {
 	Token service.VerificationService
 }
 
-func NewServices(repos *repository.Repositories) *Services {
+func NewServices(repos *repository.Repositories, db *gorm.DB) *Services {
 	return &Services{
-		Auth:  NewUserService(repos.Auth, repos.Token),
+		Auth:  NewUserService(db, repos.Auth, repos.Token),
 		Token: NewTokenService(repos.Token),
 	}
 

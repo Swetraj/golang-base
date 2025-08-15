@@ -11,6 +11,7 @@ import (
 	"github.com/Swetraj/golang-base/internal/pkg/emails"
 	"github.com/Swetraj/golang-base/internal/pkg/validations"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"log"
 	"os"
 	"strings"
@@ -22,14 +23,16 @@ type tokenService struct {
 }
 
 type userService struct {
+	db           *gorm.DB
 	repo         repository.UserRepository
 	tokenService repository.VerificationTokenRepository
 }
 
 func NewUserService(
+	db *gorm.DB,
 	repo repository.UserRepository, tokenService repository.VerificationTokenRepository,
 ) service.UserService {
-	return &userService{repo, tokenService}
+	return &userService{db, repo, tokenService}
 }
 
 func NewTokenService(repo repository.VerificationTokenRepository) service.VerificationService {
@@ -37,6 +40,18 @@ func NewTokenService(repo repository.VerificationTokenRepository) service.Verifi
 }
 
 func (u *userService) Register(ctx context.Context, email string) error {
+	tx := u.db.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	// Ensure rollback on panic or error
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			panic(r)
+		}
+	}()
 
 	isUnique, err := validations.IsUniqueValue("users", "email", email)
 	if err != nil {
@@ -57,8 +72,9 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		Provider:     constants.ProviderEmail,
 	}
 
-	err = u.repo.Create(ctx, user)
+	err = u.repo.CreateWithTx(ctx, tx, user)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
@@ -72,8 +88,13 @@ func (u *userService) Register(ctx context.Context, email string) error {
 		ExpiresAt: time.Now().Add(30 * time.Minute),
 	}
 
-	err = u.tokenService.Create(ctx, reset)
+	err = u.tokenService.CreateWithTx(ctx, tx, reset)
 	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
 		return err
 	}
 
